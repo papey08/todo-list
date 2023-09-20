@@ -26,8 +26,8 @@ type TaskRepo interface {
 	DeleteTask(ctx context.Context, id int) error
 
 	// GetTasksByStatus returns slice of tasks filtered by status with pagination
-	GetTasksByStatus(ctx context.Context, status bool, limit int, offset int) ([]model.TodoTask, error)
+	GetTasksByStatus(ctx context.Context, status bool, offset int, limit int) ([]model.TodoTask, error)
 
 	// GetTasksByDate returns slice of tasks filtered by planning date with pagination
-	GetTasksByDate(ctx context.Context, date model.Date, limit int, offset int) ([]model.TodoTask, error)
+	GetTasksByDate(ctx context.Context, date model.Date, offset int, limit int) ([]model.TodoTask, error)
 }
