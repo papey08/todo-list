@@ -149,7 +149,7 @@ func (r *repo) GetTasksByStatus(ctx context.Context, status bool, offset int, li
 }
 
 func (r *repo) GetTasksByDate(ctx context.Context, date model.Date, offset int, limit int) ([]model.TodoTask, error) {
-	rows, err := r.Query(ctx, getTasksByStatusQuery,
+	rows, err := r.Query(ctx, getTasksByDateQuery,
 		fmt.Sprintf("%d-%d-%d", date.Year, date.Month, date.Day),
 		offset, limit)
 	if err != nil {
