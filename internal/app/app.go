@@ -2,6 +2,8 @@ package app
 
 import (
 	"context"
+	"errors"
+	"todo-list/internal/app/valid"
 	"todo-list/internal/model"
 )
 
@@ -10,36 +12,35 @@ type app struct {
 }
 
 func (a *app) AddTask(ctx context.Context, t model.TodoTask) (model.TodoTask, error) {
-	// TODO: implement
-	return model.TodoTask{}, nil
+	if err := valid.TodoTask(t); err != nil {
+		return model.TodoTask{}, errors.Join(model.ErrInvalidTask, err)
+	}
+	return a.TaskRepo.AddTask(ctx, t)
 }
 
 func (a *app) GetTaskById(ctx context.Context, id int) (model.TodoTask, error) {
-	// TODO: implement
-	return model.TodoTask{}, nil
+	return a.TaskRepo.GetTaskById(ctx, id)
 }
 
 func (a *app) GetTaskByText(ctx context.Context, text string) ([]model.TodoTask, error) {
-	// TODO: implement
-	return nil, nil
+	return a.TaskRepo.GetTaskByText(ctx, text)
 }
 
 func (a *app) UpdateTask(ctx context.Context, id int, t model.TodoTask) (model.TodoTask, error) {
-	// TODO: implement
-	return model.TodoTask{}, nil
+	if err := valid.TodoTask(t); err != nil {
+		return model.TodoTask{}, errors.Join(model.ErrInvalidTask, err)
+	}
+	return a.TaskRepo.UpdateTask(ctx, id, t)
 }
 
 func (a *app) DeleteTask(ctx context.Context, id int) error {
-	// TODO: implement
-	return nil
+	return a.TaskRepo.DeleteTask(ctx, id)
 }
 
 func (a *app) GetTasksByStatus(ctx context.Context, status bool, limit int, offset int) ([]model.TodoTask, error) {
-	// TODO: implement
-	return nil, nil
+	return a.TaskRepo.GetTasksByStatus(ctx, status, limit, offset)
 }
 
 func (a *app) GetTasksByDate(ctx context.Context, date model.Date, limit int, offset int) ([]model.TodoTask, error) {
-	// TODO: implement
-	return nil, nil
+	return a.TaskRepo.GetTasksByDate(ctx, date, limit, offset)
 }
