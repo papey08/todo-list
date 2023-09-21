@@ -15,7 +15,7 @@ var (
 	noTitle            = errors.New("no title of the task")
 	titleTooLong       = errors.New("title of task is very long")
 	descriptionTooLong = errors.New("description of task is very long")
-	datePassed         = errors.New("planning date of the task is passed")
+	dateExpired        = errors.New("planning date of the task is expired")
 )
 
 // isLater checks if given date is later or equal than current date
@@ -41,7 +41,7 @@ func TodoTask(t model.TodoTask) error {
 	}
 
 	if !isLater(t.PlanningDate) { // check date of the task
-		errs = append(errs, datePassed)
+		errs = append(errs, dateExpired)
 	}
 
 	if len(errs) == 0 {
