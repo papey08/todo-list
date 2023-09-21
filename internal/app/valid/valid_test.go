@@ -43,6 +43,20 @@ func TestTodoTask(t *testing.T) {
 			expectedErrs: []error{noTitle},
 		},
 		{
+			description: "validation of task with invalid date",
+			givenTask: model.TodoTask{
+				Title:       "Title of invalid task",
+				Description: "Description of invalid task",
+				PlanningDate: model.Date{
+					Year:  2023,
+					Month: 2,
+					Day:   31,
+				},
+				Status: false,
+			},
+			expectedErrs: []error{dateInvalid},
+		},
+		{
 			description: "validation of task with expired date",
 			givenTask: model.TodoTask{
 				Title:       "Title of expired task",

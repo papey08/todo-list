@@ -15,6 +15,7 @@ var (
 	noTitle            = errors.New("no title of the task")
 	titleTooLong       = errors.New("title of task is very long")
 	descriptionTooLong = errors.New("description of task is very long")
+	dateInvalid        = errors.New("planning date of the task is invalid")
 	dateExpired        = errors.New("planning date of the task is expired")
 )
 
@@ -24,15 +25,39 @@ func isLater(d model.Date) bool {
 	return d.Year > year || (d.Year == year && d.Month > month) || (d.Year == year && d.Month == month && d.Day >= day)
 }
 
+func isLeapYear(y int) bool {
+	return (y%4 == 0 && y%100 != 0) || (y%400 == 0)
+}
+
+func date(d model.Date) bool {
+	if d.Month == time.February && d.Day == 29 && isLeapYear(d.Year) {
+		return true
+	} else {
+		daysInMonth := map[time.Month]int{
+			time.January:   31,
+			time.February:  28,
+			time.March:     31,
+			time.April:     30,
+			time.May:       31,
+			time.June:      30,
+			time.July:      31,
+			time.August:    31,
+			time.September: 30,
+			time.October:   31,
+			time.November:  30,
+			time.December:  31,
+		}
+		return d.Year > 0 && d.Day > 0 && d.Day <= daysInMonth[d.Month]
+	}
+}
+
 // TodoTask checks if all fields of task struct are valid
 func TodoTask(t model.TodoTask) error {
-	errs := make([]error, 0, 4)
+	errs := make([]error, 0, 3)
 
 	if t.Title == "" { // check if task has a title
 		errs = append(errs, noTitle)
-	}
-
-	if len(t.Title) > maxTitleLen { // check length of the title of task
+	} else if len(t.Title) > maxTitleLen { // check length of the title of task
 		errs = append(errs, titleTooLong)
 	}
 
@@ -40,7 +65,9 @@ func TodoTask(t model.TodoTask) error {
 		errs = append(errs, descriptionTooLong)
 	}
 
-	if !isLater(t.PlanningDate) { // check date of the task
+	if !date(t.PlanningDate) { // check if date is valid
+		errs = append(errs, dateInvalid)
+	} else if !isLater(t.PlanningDate) { // check if date is expired
 		errs = append(errs, dateExpired)
 	}
 
