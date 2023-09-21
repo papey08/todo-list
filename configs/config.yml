@@ -1,11 +1,11 @@
 "task_repo":
   "username": "postgres"
   "password": "postgres"
-  "host": "localhost"
+  "host": "task-repo"
   "port": 5432
-  "dbname": "todo_list"
+  "dbname": "postgres"
   "sslmode": "disable"
 
 "http_server":
-  "host": "localhost"
+  "host": "todo-list-app"
   "port": 8080

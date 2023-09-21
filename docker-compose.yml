@@ -1,0 +1,26 @@
+version: "3"
+
+services:
+  todo-list-app:
+    build: ./
+    command: ./todo-list-app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - task-repo
+
+  task-repo:
+    restart: always
+    image: postgres:15.3
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "postgres"
+      POSTGRES_DB: postgres
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./migrations/:/docker-entrypoint-initdb.d/
+    ports:
+      - "5432:5432"
+
+volumes:
+  db-data:
