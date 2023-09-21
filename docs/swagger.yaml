@@ -111,10 +111,11 @@ paths:
       description: Возвращает задачу с вхождением данной строки в заголовке или описании
       parameters:
       - description: Текст в JSON
-        in: path
-        name: id
+        in: body
+        name: input
         required: true
-        type: integer
+        schema:
+          $ref: '#/definitions/httpserver.getTaskByTextRequest'
       produces:
       - application/json
       responses:
@@ -189,11 +190,10 @@ paths:
       description: Возвращает задачу с заданным id
       parameters:
       - description: id задачи
-        in: body
-        name: input
+        in: path
+        name: id
         required: true
-        schema:
-          $ref: '#/definitions/httpserver.getTaskByTextRequest'
+        type: integer
       produces:
       - application/json
       responses:
@@ -264,7 +264,7 @@ paths:
         "200":
           description: Успешное получение задач
           schema:
-            $ref: '#/definitions/httpserver.taskResponse'
+            $ref: '#/definitions/httpserver.tasksResponse'
         "400":
           description: Неверный формат входных данных
           schema:
@@ -290,7 +290,7 @@ paths:
         "200":
           description: Успешное получение задач
           schema:
-            $ref: '#/definitions/httpserver.taskResponse'
+            $ref: '#/definitions/httpserver.tasksResponse'
         "400":
           description: Неверный формат входных данных
           schema:

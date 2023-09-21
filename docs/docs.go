@@ -25,11 +25,13 @@ const docTemplate = `{
                 "summary": "Поиск задачи по тексту заголовка или описания",
                 "parameters": [
                     {
-                        "type": "integer",
                         "description": "Текст в JSON",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/httpserver.getTaskByTextRequest"
+                        }
                     }
                 ],
                 "responses": {
@@ -114,7 +116,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Успешное получение задач",
                         "schema": {
-                            "$ref": "#/definitions/httpserver.taskResponse"
+                            "$ref": "#/definitions/httpserver.tasksResponse"
                         }
                     },
                     "400": {
@@ -154,7 +156,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Успешное получение задач",
                         "schema": {
-                            "$ref": "#/definitions/httpserver.taskResponse"
+                            "$ref": "#/definitions/httpserver.tasksResponse"
                         }
                     },
                     "400": {
@@ -181,13 +183,11 @@ const docTemplate = `{
                 "summary": "Поиск задачи по её id в postgres",
                 "parameters": [
                     {
+                        "type": "integer",
                         "description": "id задачи",
-                        "name": "input",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/httpserver.getTaskByTextRequest"
-                        }
+                        "name": "id",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
