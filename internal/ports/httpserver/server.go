@@ -8,7 +8,7 @@ import (
 
 // New creates http server which works with given app
 func New(addr string, a app.App) *http.Server {
-	gin.SetMode(gin.DebugMode)
+	gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
 	api := router.Group("todo-list/api")
 	appRouter(api, a)
