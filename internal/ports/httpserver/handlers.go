@@ -21,9 +21,9 @@ func addTask(a app.App) gin.HandlerFunc {
 			Title:       req.Title,
 			Description: req.Description,
 			PlanningDate: model.Date{
-				Day:   req.PlanningDate.Day,
-				Month: time.Month(req.PlanningDate.Month),
 				Year:  req.PlanningDate.Year,
+				Month: time.Month(req.PlanningDate.Month),
+				Day:   req.PlanningDate.Day,
 			},
 			Status: req.Status,
 		})
@@ -102,9 +102,9 @@ func updateTask(a app.App) gin.HandlerFunc {
 			Title:       req.Title,
 			Description: req.Description,
 			PlanningDate: model.Date{
-				Day:   req.PlanningDate.Day,
-				Month: time.Month(req.PlanningDate.Month),
 				Year:  req.PlanningDate.Year,
+				Month: time.Month(req.PlanningDate.Month),
+				Day:   req.PlanningDate.Day,
 			},
 			Status: req.Status,
 		})
@@ -176,9 +176,9 @@ func getTasksByDateAndStatus(a app.App) gin.HandlerFunc {
 		}
 
 		tasks, err := a.GetTasksByDateAndStatus(c, model.Date{
-			Day:   req.PlanningDate.Day,
-			Month: time.Month(req.PlanningDate.Month),
 			Year:  req.PlanningDate.Year,
+			Month: time.Month(req.PlanningDate.Month),
+			Day:   req.PlanningDate.Day,
 		}, req.Status)
 
 		switch {

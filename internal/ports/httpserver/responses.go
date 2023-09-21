@@ -10,9 +10,9 @@ type taskResponse struct {
 	Title        string `json:"title"`
 	Description  string `json:"description"`
 	PlanningDate struct {
-		Day   int `json:"day"`
-		Month int `json:"month"`
 		Year  int `json:"year"`
+		Month int `json:"month"`
+		Day   int `json:"day"`
 	} `json:"planning_date"`
 	Status bool `json:"status"`
 }
@@ -26,13 +26,13 @@ func taskSuccessResponse(t model.TodoTask) *gin.H {
 			Title:       t.Title,
 			Description: t.Description,
 			PlanningDate: struct {
-				Day   int `json:"day"`
-				Month int `json:"month"`
 				Year  int `json:"year"`
+				Month int `json:"month"`
+				Day   int `json:"day"`
 			}{
-				Day:   t.PlanningDate.Day,
-				Month: int(t.PlanningDate.Month),
 				Year:  t.PlanningDate.Year,
+				Month: int(t.PlanningDate.Month),
+				Day:   t.PlanningDate.Day,
 			},
 			Status: t.Status,
 		},
@@ -48,13 +48,13 @@ func tasksSuccessResponse(tasks []model.TodoTask) *gin.H {
 			Title:       t.Title,
 			Description: t.Description,
 			PlanningDate: struct {
-				Day   int `json:"day"`
-				Month int `json:"month"`
 				Year  int `json:"year"`
+				Month int `json:"month"`
+				Day   int `json:"day"`
 			}{
-				Day:   t.PlanningDate.Day,
-				Month: int(t.PlanningDate.Month),
 				Year:  t.PlanningDate.Year,
+				Month: int(t.PlanningDate.Month),
+				Day:   t.PlanningDate.Day,
 			},
 			Status: t.Status,
 		})

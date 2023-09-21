@@ -2,10 +2,15 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"github.com/jackc/pgx/v5"
 	"github.com/spf13/viper"
 	"log"
+	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
 	"todo-list/internal/app"
 	"todo-list/internal/ports/httpserver"
@@ -56,7 +61,26 @@ func main() {
 
 	srv := httpserver.New(fmt.Sprintf("%s:%d", viper.GetString("http_server.host"), viper.GetInt("http_server.port")), a)
 
-	if err := srv.ListenAndServe(); err != nil {
-		log.Fatalf("unable to listen and serve http server: %s", err.Error())
+	// preparing graceful shutdown
+	osSignals := make(chan os.Signal, 1)
+	signal.Notify(osSignals, os.Interrupt, syscall.SIGTERM)
+	signal.Notify(osSignals, os.Interrupt, syscall.SIGINT)
+
+	go func() {
+		log.Println("Starting http server")
+		if err := srv.ListenAndServe(); !errors.Is(err, http.ErrServerClosed) {
+			log.Fatal("can't listen and serve server:", err.Error())
+		}
+	}()
+
+	// waiting for Ctrl+C
+	<-osSignals
+
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second) // 30s timeout to finish all active connections
+	defer cancel()
+
+	if err := srv.Shutdown(ctx); err != nil {
+		log.Fatal("Server graceful shutdown failed:", err.Error())
 	}
+	log.Println("Server was gracefully stopped")
 }

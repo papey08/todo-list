@@ -4,9 +4,9 @@ type addTaskRequest struct {
 	Title        string `json:"title"`
 	Description  string `json:"description"`
 	PlanningDate struct {
-		Day   int `json:"day"`
-		Month int `json:"month"`
 		Year  int `json:"year"`
+		Month int `json:"month"`
+		Day   int `json:"day"`
 	} `json:"planning_date"`
 	Status bool `json:"status"`
 }
@@ -19,9 +19,9 @@ type updateTaskRequest struct {
 	Title        string `json:"title"`
 	Description  string `json:"description"`
 	PlanningDate struct {
-		Day   int `json:"day"`
-		Month int `json:"month"`
 		Year  int `json:"year"`
+		Month int `json:"month"`
+		Day   int `json:"day"`
 	} `json:"planning_date"`
 	Status bool `json:"status"`
 }
@@ -34,9 +34,9 @@ type getTasksByStatusRequest struct {
 
 type getTasksByDateAndStatusRequest struct {
 	PlanningDate struct {
-		Day   int `json:"day"`
-		Month int `json:"month"`
 		Year  int `json:"year"`
+		Month int `json:"month"`
+		Day   int `json:"day"`
 	} `json:"planning_date"`
 	Status bool `json:"status"`
 }
