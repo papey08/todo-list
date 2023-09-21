@@ -15,7 +15,7 @@ var (
 	noTitle            = errors.New("no title of the task")
 	titleTooLong       = errors.New("title of task is very long")
 	descriptionTooLong = errors.New("description of task is very long")
-	dateInvalid        = errors.New("planning date of the task is invalid")
+	dateInvalid        = errors.New("date is invalid")
 	dateExpired        = errors.New("planning date of the task is expired")
 )
 
@@ -25,13 +25,15 @@ func isLater(d model.Date) bool {
 	return d.Year > year || (d.Year == year && d.Month > month) || (d.Year == year && d.Month == month && d.Day >= day)
 }
 
+// isLeapYear returns true if year y is leap
 func isLeapYear(y int) bool {
 	return (y%4 == 0 && y%100 != 0) || (y%400 == 0)
 }
 
-func date(d model.Date) bool {
+// Date returns true if date is valid
+func Date(d model.Date) error {
 	if d.Month == time.February && d.Day == 29 && isLeapYear(d.Year) {
-		return true
+		return dateInvalid
 	} else {
 		daysInMonth := map[time.Month]int{
 			time.January:   31,
@@ -47,7 +49,11 @@ func date(d model.Date) bool {
 			time.November:  30,
 			time.December:  31,
 		}
-		return d.Year > 0 && d.Day > 0 && d.Day <= daysInMonth[d.Month]
+		if d.Year > 0 && d.Day > 0 && d.Day <= daysInMonth[d.Month] {
+			return nil
+		} else {
+			return dateInvalid
+		}
 	}
 }
 
@@ -65,8 +71,8 @@ func TodoTask(t model.TodoTask) error {
 		errs = append(errs, descriptionTooLong)
 	}
 
-	if !date(t.PlanningDate) { // check if date is valid
-		errs = append(errs, dateInvalid)
+	if err := Date(t.PlanningDate); err != nil { // check if date is valid
+		errs = append(errs, err)
 	} else if !isLater(t.PlanningDate) { // check if date is expired
 		errs = append(errs, dateExpired)
 	}

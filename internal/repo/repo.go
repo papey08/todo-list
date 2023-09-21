@@ -41,10 +41,9 @@ const (
 		WHERE status = $1
 		OFFSET $2 LIMIT $3;`
 
-	getTasksByDateQuery = `
+	getTasksByDateAndStatusQuery = `
 		SELECT * FROM tasks
-		WHERE planning_date = $1
-		OFFSET $2 LIMIT $3;`
+		WHERE planning_date = $1 AND status = $2;`
 )
 
 type repo struct {
@@ -148,10 +147,10 @@ func (r *repo) GetTasksByStatus(ctx context.Context, status bool, offset int, li
 	return tasks, nil
 }
 
-func (r *repo) GetTasksByDate(ctx context.Context, date model.Date, offset int, limit int) ([]model.TodoTask, error) {
-	rows, err := r.Query(ctx, getTasksByDateQuery,
+func (r *repo) GetTasksByDateAndStatus(ctx context.Context, date model.Date, status bool) ([]model.TodoTask, error) {
+	rows, err := r.Query(ctx, getTasksByDateAndStatusQuery,
 		fmt.Sprintf("%d-%d-%d", date.Year, date.Month, date.Day),
-		offset, limit)
+		status)
 	if err != nil {
 		return nil, errors.Join(model.ErrTaskRepo, err)
 	}

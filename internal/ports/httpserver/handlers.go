@@ -74,6 +74,8 @@ func getTaskByText(a app.App) gin.HandlerFunc {
 		tasks, err := a.GetTaskByText(c, req.Text)
 
 		switch {
+		case errors.Is(err, model.ErrInvalidInput):
+			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
 		case errors.Is(err, model.ErrTaskRepo):
 			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrTaskRepo))
 		case err == nil:
@@ -154,6 +156,8 @@ func getTasksByStatus(a app.App) gin.HandlerFunc {
 		tasks, err := a.GetTasksByStatus(c, req.Status, req.Offset, req.Limit)
 
 		switch {
+		case errors.Is(err, model.ErrInvalidInput):
+			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
 		case errors.Is(err, model.ErrTaskRepo):
 			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrTaskRepo))
 		case err == nil:
@@ -164,18 +168,18 @@ func getTasksByStatus(a app.App) gin.HandlerFunc {
 	}
 }
 
-func getTasksByDate(a app.App) gin.HandlerFunc {
+func getTasksByDateAndStatus(a app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var req getTasksByDateRequest
+		var req getTasksByDateAndStatusRequest
 		if err := c.BindJSON(&req); err != nil {
 			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
 		}
 
-		tasks, err := a.GetTasksByDate(c, model.Date{
+		tasks, err := a.GetTasksByDateAndStatus(c, model.Date{
 			Day:   req.PlanningDate.Day,
 			Month: time.Month(req.PlanningDate.Month),
 			Year:  req.PlanningDate.Year,
-		}, req.Offset, req.Limit)
+		}, req.Status)
 
 		switch {
 		case errors.Is(err, model.ErrTaskRepo):

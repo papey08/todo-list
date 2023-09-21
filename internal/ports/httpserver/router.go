@@ -12,5 +12,5 @@ func appRouter(r *gin.RouterGroup, a app.App) {
 	r.PUT("/task/:id", updateTask(a))
 	r.DELETE("/task/:id", deleteTask(a))
 	r.GET("/task/by_status", getTasksByStatus(a))
-	r.GET("/task/by_date", getTasksByDate(a))
+	r.GET("/task/by_date", getTasksByDateAndStatus(a))
 }

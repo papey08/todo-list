@@ -23,6 +23,9 @@ func (a *app) GetTaskById(ctx context.Context, id int) (model.TodoTask, error) {
 }
 
 func (a *app) GetTaskByText(ctx context.Context, text string) ([]model.TodoTask, error) {
+	if text == "" {
+		return nil, model.ErrInvalidInput
+	}
 	return a.TaskRepo.GetTaskByText(ctx, text)
 }
 
@@ -38,11 +41,17 @@ func (a *app) DeleteTask(ctx context.Context, id int) error {
 }
 
 func (a *app) GetTasksByStatus(ctx context.Context, status bool, limit int, offset int) ([]model.TodoTask, error) {
+	if limit < 0 || offset < 0 {
+		return nil, model.ErrInvalidInput
+	}
 	return a.TaskRepo.GetTasksByStatus(ctx, status, limit, offset)
 }
 
-func (a *app) GetTasksByDate(ctx context.Context, date model.Date, limit int, offset int) ([]model.TodoTask, error) {
-	return a.TaskRepo.GetTasksByDate(ctx, date, limit, offset)
+func (a *app) GetTasksByDateAndStatus(ctx context.Context, date model.Date, status bool) ([]model.TodoTask, error) {
+	if err := valid.Date(date); err != nil {
+		return nil, errors.Join(model.ErrInvalidInput, err)
+	}
+	return a.TaskRepo.GetTasksByDateAndStatus(ctx, date, status)
 }
 
 func New(tr TaskRepo) App {

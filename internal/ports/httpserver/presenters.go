@@ -32,12 +32,11 @@ type getTasksByStatusRequest struct {
 	Limit  int  `json:"limit"`
 }
 
-type getTasksByDateRequest struct {
+type getTasksByDateAndStatusRequest struct {
 	PlanningDate struct {
 		Day   int `json:"day"`
 		Month int `json:"month"`
 		Year  int `json:"year"`
 	} `json:"planning_date"`
-	Offset int `json:"offset"`
-	Limit  int `json:"limit"`
+	Status bool `json:"status"`
 }
