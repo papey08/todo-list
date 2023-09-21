@@ -23,7 +23,7 @@ type taskResponse struct {
 
 type tasksResponse struct {
 	Data []taskData `json:"data"`
-	Err  error      `json:"error"`
+	Err  *string    `json:"error"`
 }
 
 func taskSuccessResponse(t model.TodoTask) taskResponse {

@@ -23,6 +23,7 @@ func addTask(a app.App) gin.HandlerFunc {
 		var req addTaskRequest
 		if err := c.BindJSON(&req); err != nil {
 			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
+			return
 		}
 
 		t, err := a.AddTask(c, model.TodoTask{
@@ -63,6 +64,7 @@ func getTaskById(a app.App) gin.HandlerFunc {
 		id, err := strconv.Atoi(c.Param("id"))
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
+			return
 		}
 
 		t, err := a.GetTaskById(c, id)
@@ -94,6 +96,7 @@ func getTaskByText(a app.App) gin.HandlerFunc {
 		var req getTaskByTextRequest
 		if err := c.BindJSON(&req); err != nil {
 			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
+			return
 		}
 
 		tasks, err := a.GetTaskByText(c, req.Text)
@@ -126,11 +129,13 @@ func updateTask(a app.App) gin.HandlerFunc {
 		id, err := strconv.Atoi(c.Param("id"))
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
+			return
 		}
 
 		var req updateTaskRequest
 		if err = c.BindJSON(&req); err != nil {
 			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
+			return
 		}
 
 		t, err := a.UpdateTask(c, id, model.TodoTask{
@@ -173,6 +178,7 @@ func deleteTask(a app.App) gin.HandlerFunc {
 		id, err := strconv.Atoi(c.Param("id"))
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(err))
+			return
 		}
 
 		err = a.DeleteTask(c, id)
@@ -203,6 +209,7 @@ func getTasksByStatus(a app.App) gin.HandlerFunc {
 		var req getTasksByStatusRequest
 		if err := c.BindJSON(&req); err != nil {
 			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
+			return
 		}
 
 		tasks, err := a.GetTasksByStatus(c, req.Status, req.Offset, req.Limit)
@@ -233,6 +240,7 @@ func getTasksByDateAndStatus(a app.App) gin.HandlerFunc {
 		var req getTasksByDateAndStatusRequest
 		if err := c.BindJSON(&req); err != nil {
 			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
+			return
 		}
 
 		tasks, err := a.GetTasksByDateAndStatus(c, model.Date{
@@ -242,6 +250,8 @@ func getTasksByDateAndStatus(a app.App) gin.HandlerFunc {
 		}, req.Status)
 
 		switch {
+		case errors.Is(err, model.ErrInvalidInput):
+			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidInput))
 		case errors.Is(err, model.ErrTaskRepo):
 			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrTaskRepo))
 		case err == nil:
