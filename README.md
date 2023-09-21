@@ -95,6 +95,13 @@ go mod download
 go run cmd/server/main.go
 ```
 
+### Запуск тестов
+
+```shell
+go mod tidy
+go test -v -race ./... ./...
+```
+
 ## Формат запросов
 
 Swagger-документация доступна по адресу http://localhost:8080/todo-list/api/swagger/index.html 
