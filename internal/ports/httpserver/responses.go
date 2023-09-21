@@ -1,11 +1,10 @@
 package httpserver
 
 import (
-	"github.com/gin-gonic/gin"
 	"todo-list/internal/model"
 )
 
-type taskResponse struct {
+type taskData struct {
 	Id           int    `json:"id"`
 	Title        string `json:"title"`
 	Description  string `json:"description"`
@@ -17,11 +16,19 @@ type taskResponse struct {
 	Status bool `json:"status"`
 }
 
-type tasksResponse []taskResponse
+type taskResponse struct {
+	Data *taskData `json:"data"`
+	Err  *string   `json:"error"`
+}
 
-func taskSuccessResponse(t model.TodoTask) *gin.H {
-	return &gin.H{
-		"data": taskResponse{
+type tasksResponse struct {
+	Data []taskData `json:"data"`
+	Err  error      `json:"error"`
+}
+
+func taskSuccessResponse(t model.TodoTask) taskResponse {
+	return taskResponse{
+		Data: &taskData{
 			Id:          t.Id,
 			Title:       t.Title,
 			Description: t.Description,
@@ -36,14 +43,14 @@ func taskSuccessResponse(t model.TodoTask) *gin.H {
 			},
 			Status: t.Status,
 		},
-		"error": nil,
+		Err: nil,
 	}
 }
 
-func tasksSuccessResponse(tasks []model.TodoTask) *gin.H {
-	resp := make(tasksResponse, 0, len(tasks))
+func tasksSuccessResponse(tasks []model.TodoTask) tasksResponse {
+	resp := make([]taskData, 0, len(tasks))
 	for _, t := range tasks {
-		resp = append(resp, taskResponse{
+		resp = append(resp, taskData{
 			Id:          t.Id,
 			Title:       t.Title,
 			Description: t.Description,
@@ -59,22 +66,23 @@ func tasksSuccessResponse(tasks []model.TodoTask) *gin.H {
 			Status: t.Status,
 		})
 	}
-	return &gin.H{
-		"data":  resp,
-		"error": nil,
+	return tasksResponse{
+		Data: resp,
+		Err:  nil,
 	}
 }
 
-func errorResponse(err error) *gin.H {
-	return &gin.H{
-		"data":  nil,
-		"error": err.Error(),
+func errorResponse(err error) taskResponse {
+	errStr := err.Error()
+	return taskResponse{
+		Data: nil,
+		Err:  &errStr,
 	}
 }
 
-func deleteSuccessResponse() *gin.H {
-	return &gin.H{
-		"data":  nil,
-		"error": nil,
+func deleteSuccessResponse() taskResponse {
+	return taskResponse{
+		Data: nil,
+		Err:  nil,
 	}
 }

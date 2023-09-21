@@ -1,0 +1,303 @@
+basePath: /todo-list/api
+definitions:
+  httpserver.addTaskRequest:
+    properties:
+      description:
+        type: string
+      planning_date:
+        properties:
+          day:
+            type: integer
+          month:
+            type: integer
+          year:
+            type: integer
+        type: object
+      status:
+        type: boolean
+      title:
+        type: string
+    type: object
+  httpserver.getTaskByTextRequest:
+    properties:
+      text:
+        type: string
+    type: object
+  httpserver.getTasksByDateAndStatusRequest:
+    properties:
+      planning_date:
+        properties:
+          day:
+            type: integer
+          month:
+            type: integer
+          year:
+            type: integer
+        type: object
+      status:
+        type: boolean
+    type: object
+  httpserver.getTasksByStatusRequest:
+    properties:
+      limit:
+        type: integer
+      offset:
+        type: integer
+      status:
+        type: boolean
+    type: object
+  httpserver.taskData:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      planning_date:
+        properties:
+          day:
+            type: integer
+          month:
+            type: integer
+          year:
+            type: integer
+        type: object
+      status:
+        type: boolean
+      title:
+        type: string
+    type: object
+  httpserver.taskResponse:
+    properties:
+      data:
+        $ref: '#/definitions/httpserver.taskData'
+      error:
+        type: string
+    type: object
+  httpserver.tasksResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/httpserver.taskData'
+        type: array
+      error: {}
+    type: object
+  httpserver.updateTaskRequest:
+    properties:
+      description:
+        type: string
+      planning_date:
+        properties:
+          day:
+            type: integer
+          month:
+            type: integer
+          year:
+            type: integer
+        type: object
+      status:
+        type: boolean
+      title:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: Приложение для создания задач на день
+  title: todo-list
+  version: "1.0"
+paths:
+  /task:
+    get:
+      description: Возвращает задачу с вхождением данной строки в заголовке или описании
+      parameters:
+      - description: Текст в JSON
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное получение задач
+          schema:
+            $ref: '#/definitions/httpserver.tasksResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/httpserver.taskResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/httpserver.taskResponse'
+      summary: Поиск задачи по тексту заголовка или описания
+    post:
+      description: Возвращает добавленную задачу с её id в postgres
+      parameters:
+      - description: Новая задача в JSON
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/httpserver.addTaskRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное добавление
+          schema:
+            $ref: '#/definitions/httpserver.taskResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/httpserver.taskResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/httpserver.taskResponse'
+      summary: Добавление новой задачи
+  /task/{id}:
+    delete:
+      description: Удаляет задачу с заданным id
+      parameters:
+      - description: id удаляемой задачи
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное удаление
+          schema:
+            $ref: '#/definitions/httpserver.taskResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/httpserver.taskResponse'
+        "404":
+          description: Задача с заданным id не найдена
+          schema:
+            $ref: '#/definitions/httpserver.taskResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/httpserver.taskResponse'
+      summary: Удаление задачи по её id в postgres
+    get:
+      description: Возвращает задачу с заданным id
+      parameters:
+      - description: id задачи
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/httpserver.getTaskByTextRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное получение
+          schema:
+            $ref: '#/definitions/httpserver.taskResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/httpserver.taskResponse'
+        "404":
+          description: Задача с заданным id не найдена
+          schema:
+            $ref: '#/definitions/httpserver.taskResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/httpserver.taskResponse'
+      summary: Поиск задачи по её id в postgres
+    put:
+      description: Возвращает задачу с заданным id и изменёнными полями
+      parameters:
+      - description: Новые поля задачи
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/httpserver.updateTaskRequest'
+      - description: id изменяемой задачи
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное обновление
+          schema:
+            $ref: '#/definitions/httpserver.taskResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/httpserver.taskResponse'
+        "404":
+          description: Задача с заданным id не найдена
+          schema:
+            $ref: '#/definitions/httpserver.taskResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/httpserver.taskResponse'
+      summary: Обновление полей задачи по её id в postgres
+  /task/by_date:
+    get:
+      description: Возвращает список задач
+      parameters:
+      - description: Дата и статус
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/httpserver.getTasksByDateAndStatusRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное получение задач
+          schema:
+            $ref: '#/definitions/httpserver.taskResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/httpserver.taskResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/httpserver.taskResponse'
+      summary: Получение списка задач с фильтром по дате и статусу
+  /task/by_status:
+    get:
+      description: Возвращает список задач
+      parameters:
+      - description: Статус и пагинация
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/httpserver.getTasksByStatusRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное получение задач
+          schema:
+            $ref: '#/definitions/httpserver.taskResponse'
+        "400":
+          description: Неверный формат входных данных
+          schema:
+            $ref: '#/definitions/httpserver.taskResponse'
+        "500":
+          description: Проблемы на стороне сервера
+          schema:
+            $ref: '#/definitions/httpserver.taskResponse'
+      summary: Получение списка задач с фильтром по статусу и пагинацией
+swagger: "2.0"

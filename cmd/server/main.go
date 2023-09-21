@@ -37,6 +37,12 @@ func TaskRepoConfig(ctx context.Context, dbURL string) *pgx.Conn {
 	}
 }
 
+//	@title		    todo-list
+//	@version	    1.0
+//	@description	Приложение для создания задач на день
+//	@host		    localhost:8080
+//	@BasePath		/todo-list/api
+
 func main() {
 	ctx := context.Background()
 	if err := InitConfig(); err != nil {

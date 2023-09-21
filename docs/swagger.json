@@ -1,0 +1,464 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Приложение для создания задач на день",
+        "title": "todo-list",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/todo-list/api",
+    "paths": {
+        "/task": {
+            "get": {
+                "description": "Возвращает задачу с вхождением данной строки в заголовке или описании",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Поиск задачи по тексту заголовка или описания",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Текст в JSON",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешное получение задач",
+                        "schema": {
+                            "$ref": "#/definitions/httpserver.tasksResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат входных данных",
+                        "schema": {
+                            "$ref": "#/definitions/httpserver.taskResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Проблемы на стороне сервера",
+                        "schema": {
+                            "$ref": "#/definitions/httpserver.taskResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Возвращает добавленную задачу с её id в postgres",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Добавление новой задачи",
+                "parameters": [
+                    {
+                        "description": "Новая задача в JSON",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/httpserver.addTaskRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешное добавление",
+                        "schema": {
+                            "$ref": "#/definitions/httpserver.taskResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат входных данных",
+                        "schema": {
+                            "$ref": "#/definitions/httpserver.taskResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Проблемы на стороне сервера",
+                        "schema": {
+                            "$ref": "#/definitions/httpserver.taskResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/task/by_date": {
+            "get": {
+                "description": "Возвращает список задач",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Получение списка задач с фильтром по дате и статусу",
+                "parameters": [
+                    {
+                        "description": "Дата и статус",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/httpserver.getTasksByDateAndStatusRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешное получение задач",
+                        "schema": {
+                            "$ref": "#/definitions/httpserver.taskResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат входных данных",
+                        "schema": {
+                            "$ref": "#/definitions/httpserver.taskResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Проблемы на стороне сервера",
+                        "schema": {
+                            "$ref": "#/definitions/httpserver.taskResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/task/by_status": {
+            "get": {
+                "description": "Возвращает список задач",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Получение списка задач с фильтром по статусу и пагинацией",
+                "parameters": [
+                    {
+                        "description": "Статус и пагинация",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/httpserver.getTasksByStatusRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешное получение задач",
+                        "schema": {
+                            "$ref": "#/definitions/httpserver.taskResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат входных данных",
+                        "schema": {
+                            "$ref": "#/definitions/httpserver.taskResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Проблемы на стороне сервера",
+                        "schema": {
+                            "$ref": "#/definitions/httpserver.taskResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/task/{id}": {
+            "get": {
+                "description": "Возвращает задачу с заданным id",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Поиск задачи по её id в postgres",
+                "parameters": [
+                    {
+                        "description": "id задачи",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/httpserver.getTaskByTextRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешное получение",
+                        "schema": {
+                            "$ref": "#/definitions/httpserver.taskResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат входных данных",
+                        "schema": {
+                            "$ref": "#/definitions/httpserver.taskResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Задача с заданным id не найдена",
+                        "schema": {
+                            "$ref": "#/definitions/httpserver.taskResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Проблемы на стороне сервера",
+                        "schema": {
+                            "$ref": "#/definitions/httpserver.taskResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Возвращает задачу с заданным id и изменёнными полями",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Обновление полей задачи по её id в postgres",
+                "parameters": [
+                    {
+                        "description": "Новые поля задачи",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/httpserver.updateTaskRequest"
+                        }
+                    },
+                    {
+                        "type": "integer",
+                        "description": "id изменяемой задачи",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешное обновление",
+                        "schema": {
+                            "$ref": "#/definitions/httpserver.taskResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат входных данных",
+                        "schema": {
+                            "$ref": "#/definitions/httpserver.taskResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Задача с заданным id не найдена",
+                        "schema": {
+                            "$ref": "#/definitions/httpserver.taskResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Проблемы на стороне сервера",
+                        "schema": {
+                            "$ref": "#/definitions/httpserver.taskResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Удаляет задачу с заданным id",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Удаление задачи по её id в postgres",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id удаляемой задачи",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешное удаление",
+                        "schema": {
+                            "$ref": "#/definitions/httpserver.taskResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат входных данных",
+                        "schema": {
+                            "$ref": "#/definitions/httpserver.taskResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Задача с заданным id не найдена",
+                        "schema": {
+                            "$ref": "#/definitions/httpserver.taskResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Проблемы на стороне сервера",
+                        "schema": {
+                            "$ref": "#/definitions/httpserver.taskResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "httpserver.addTaskRequest": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "planning_date": {
+                    "type": "object",
+                    "properties": {
+                        "day": {
+                            "type": "integer"
+                        },
+                        "month": {
+                            "type": "integer"
+                        },
+                        "year": {
+                            "type": "integer"
+                        }
+                    }
+                },
+                "status": {
+                    "type": "boolean"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "httpserver.getTaskByTextRequest": {
+            "type": "object",
+            "properties": {
+                "text": {
+                    "type": "string"
+                }
+            }
+        },
+        "httpserver.getTasksByDateAndStatusRequest": {
+            "type": "object",
+            "properties": {
+                "planning_date": {
+                    "type": "object",
+                    "properties": {
+                        "day": {
+                            "type": "integer"
+                        },
+                        "month": {
+                            "type": "integer"
+                        },
+                        "year": {
+                            "type": "integer"
+                        }
+                    }
+                },
+                "status": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "httpserver.getTasksByStatusRequest": {
+            "type": "object",
+            "properties": {
+                "limit": {
+                    "type": "integer"
+                },
+                "offset": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "httpserver.taskData": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "planning_date": {
+                    "type": "object",
+                    "properties": {
+                        "day": {
+                            "type": "integer"
+                        },
+                        "month": {
+                            "type": "integer"
+                        },
+                        "year": {
+                            "type": "integer"
+                        }
+                    }
+                },
+                "status": {
+                    "type": "boolean"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "httpserver.taskResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/httpserver.taskData"
+                },
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
+        "httpserver.tasksResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/httpserver.taskData"
+                    }
+                },
+                "error": {}
+            }
+        },
+        "httpserver.updateTaskRequest": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "planning_date": {
+                    "type": "object",
+                    "properties": {
+                        "day": {
+                            "type": "integer"
+                        },
+                        "month": {
+                            "type": "integer"
+                        },
+                        "year": {
+                            "type": "integer"
+                        }
+                    }
+                },
+                "status": {
+                    "type": "boolean"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
