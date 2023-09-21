@@ -44,3 +44,9 @@ func (a *app) GetTasksByStatus(ctx context.Context, status bool, limit int, offs
 func (a *app) GetTasksByDate(ctx context.Context, date model.Date, limit int, offset int) ([]model.TodoTask, error) {
 	return a.TaskRepo.GetTasksByDate(ctx, date, limit, offset)
 }
+
+func New(tr TaskRepo) App {
+	return &app{
+		TaskRepo: tr,
+	}
+}

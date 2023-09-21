@@ -108,6 +108,8 @@ func updateTask(a app.App) gin.HandlerFunc {
 		})
 
 		switch {
+		case errors.Is(err, model.ErrTaskNotFound):
+			c.AbortWithStatusJSON(http.StatusNotFound, errorResponse(model.ErrTaskNotFound))
 		case errors.Is(err, model.ErrInvalidTask):
 			c.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(model.ErrInvalidTask))
 		case errors.Is(err, model.ErrTaskRepo):
@@ -130,6 +132,8 @@ func deleteTask(a app.App) gin.HandlerFunc {
 		err = a.DeleteTask(c, id)
 
 		switch {
+		case errors.Is(err, model.ErrTaskNotFound):
+			c.AbortWithStatusJSON(http.StatusNotFound, errorResponse(model.ErrTaskNotFound))
 		case errors.Is(err, model.ErrTaskRepo):
 			c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(model.ErrTaskRepo))
 		case err == nil:

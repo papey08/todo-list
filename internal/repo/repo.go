@@ -22,7 +22,7 @@ const (
 
 	getTaskByTextQuery = `
 		SELECT * FROM tasks
-		WHERE (title LIKE $1 OR description LIKE $1);`
+		WHERE (title ILIKE $1 OR description ILIKE $1);`
 
 	updateTaskQuery = `
 		UPDATE tasks
@@ -80,7 +80,7 @@ func (r *repo) GetTaskById(ctx context.Context, id int) (model.TodoTask, error) 
 }
 
 func (r *repo) GetTaskByText(ctx context.Context, text string) ([]model.TodoTask, error) {
-	rows, err := r.Query(ctx, getTaskByTextQuery, text+"%")
+	rows, err := r.Query(ctx, getTaskByTextQuery, "%"+text+"%")
 	if err != nil {
 		return nil, errors.Join(model.ErrTaskRepo, err)
 	}
